@@ -1,0 +1,45 @@
+<!--
+    LIVE DEMO : http://192.168.3.178/weather/
+-->
+<!doctype html>
+<html>
+
+<head>
+    <title>Mets tes hauts (ou tes bas)</title>
+    <meta charset="utf8" />
+</head>
+
+<body>
+    <input type='text' placeholder='Type a city name here to load the weather...' id='city' onkeypress='clearTimeout(timeOut);loadWeather();' style='width:100%;height:30px;' />
+    <br />
+    <div id='weather'></div>
+    <script>
+        document.getElementById("city").focus();
+        var timeOut, apikey = "67086eb53fc2f16aabff20a6530f641d";
+
+        function loadWeather() {
+            document.getElementById('weather').innerHTML = "Chargement...";
+            timeOut = setTimeout(function() {
+                var city = document.getElementById('city').value;
+                var link = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&APPID=" + apikey + "&units=metric";
+                document.getElementById('weather').innerHTML = "Chargement de la météo de " + city + "...";
+                var request = new XMLHttpRequest();
+                request.open('GET', link, false);
+                request.send(null);
+                if (request.status == 200) {
+                    var response = JSON.parse(request.responseText);
+                    document.getElementById('weather').innerHTML =
+                        "Météo de " + response['name'] + " :<br />" +
+                        "<img src='http://openweathermap.org/img/w/" + response['weather'][0]['icon'] + ".png' style='margin-right:15px;float:left;' />" +
+                        "T°: " + response['main']['temp'] + "°C<br />" +
+                        "Min: " + response['main']['temp_min'] + "°C<br />" +
+                        "Max: " + response['main']['temp_max'] + "°C";
+                } else {
+                    document.getElementById('weather').innerHTML = "Quelque chose n'a pas fonctionné.";
+                }
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>
